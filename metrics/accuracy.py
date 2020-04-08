@@ -13,18 +13,20 @@ def accuracy_score(y_true: torch.Tensor, y_predict: torch.Tensor):
 
 
 class AccuracyScore:
+    name = 'accuracy'
+
     def __init__(self):
-        self.correct = 0
-        self.total = 0
+        self._correct = 0
+        self._total = 0
 
     def __call__(self, y_true: torch.Tensor, y_predict: torch.Tensor):
-        self.correct += (y_true == y_predict).sum().item()
-        self.total += np.prod(y_predict.shape)
+        self._correct += (y_true == y_predict).sum().item()
+        self._total += np.prod(y_predict.shape)
 
     @property
     def score(self):
-        return self.correct / self.total
+        return self._correct / self._total
 
     def reset(self):
-        self.correct = 0
-        self.total = 0
+        self._correct = 0
+        self._total = 0

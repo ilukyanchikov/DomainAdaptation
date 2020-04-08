@@ -1,5 +1,3 @@
-import pytest
-from unittest.mock import MagicMock, Mock
 import torch
 import numpy as np
 from utils import measure_metric
@@ -28,13 +26,13 @@ def test_measure_metric():
     ]
 
     pred1 = [
-        np.array([1,1,0,0]),
-        np.array([1,1,0,0]),
+        np.array([1, 1, 0, 0]),
+        np.array([1, 1, 0, 0]),
     ]
 
     pred2 = [
-        np.array([1,1,1,1]),
-        np.array([0,0,0,0]),
+        np.array([1, 1, 1, 1]),
+        np.array([0, 0, 0, 0]),
     ]
 
     model1 = MockModel(pred1)
