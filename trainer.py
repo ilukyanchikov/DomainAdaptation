@@ -60,7 +60,7 @@ class Trainer:
                     src_metrics = self.score(src_val_data, metrics)
                     self.last_epoch_history['src_metrics'] = src_metrics
                 # TODO model fails on target predict
-                if trg_metrics is not None:
+                if trg_val_data is not None:
                     trg_metrics = self.score(trg_val_data, metrics)
                     self.last_epoch_history['trg_metrics'] = trg_metrics
 
