@@ -16,6 +16,7 @@ class Trainer:
         }
 
     def train_on_batch(self, src_batch, trg_batch, opt):
+        self.model.train()
         batch = self._merge_batches(src_batch, trg_batch)
         metadata = {'epoch': self.epoch, 'n_epochs': self.n_epochs}
         loss = self.loss(self.model, batch, **metadata)
@@ -56,10 +57,10 @@ class Trainer:
 
             if metrics is not None and self.epoch % val_freq == 0:
                 src_val_data, trg_val_data = validation_data
+                self.model.eval()
                 if src_val_data is not None:
                     src_metrics = self.score(src_val_data, metrics)
                     self.last_epoch_history['src_metrics'] = src_metrics
-                # TODO model fails on target predict
                 if trg_val_data is not None:
                     trg_metrics = self.score(trg_val_data, metrics)
                     self.last_epoch_history['trg_metrics'] = trg_metrics
@@ -71,7 +72,7 @@ class Trainer:
         for metric in metrics:
             metric.reset()
 
-        # TODO тут дата прогоняет все данные в первый раз а пото вроде как пустая
+        data.reload_iterator()
         for images, true_classes in data:
             pred_classes = self.model.predict(images)
             for metric in metrics:

@@ -12,7 +12,7 @@ def only_loss(*args, **kwargs):
     return loss
 
 
-class MMM:
+class DebugMetric:
     score = 1
     name = 'test'
 
@@ -31,14 +31,15 @@ class MMM:
 if __name__ == '__main__':
     train_gen_s, val_gen_s, test_gen_s = create_data_generators("office-31",
                                                                 'amazon',
-                                                                batch_size=16)
+                                                                batch_size=16,
+                                                                infinite_train=True)
 
     train_gen_t, val_gen_t, test_gen_t = create_data_generators("office-31",
                                                                 'dslr',
                                                                 batch_size=16)
     model = DANNModel()
     acc = AccuracyScoreFromLogits()
-    mmm = MMM(acc)
+    mmm = DebugMetric(acc)
 
     tr = Trainer(model, only_loss)
     tr.fit(train_gen_s, train_gen_t,
