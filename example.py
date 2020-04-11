@@ -36,7 +36,8 @@ if __name__ == '__main__':
 
     train_gen_t, val_gen_t, test_gen_t = create_data_generators("office-31",
                                                                 'dslr',
-                                                                batch_size=16)
+                                                                batch_size=16,
+                                                                infinite_train=True)
     model = DANNModel()
     acc = AccuracyScoreFromLogits()
     mmm = DebugMetric(acc)
