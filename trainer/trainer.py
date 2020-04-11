@@ -66,6 +66,7 @@ class Trainer:
                     self.last_epoch_history['trg_metrics'] = trg_metrics
 
             if callback is not None:
+                self.last_epoch_history['loss'] /= steps_per_epoch
                 callback(self.last_epoch_history, self.epoch, n_epochs)
 
     def score(self, data, metrics):
