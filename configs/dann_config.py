@@ -25,6 +25,8 @@ DATASET = "office-31"
 SOURCE_DOMAIN = "amazon"
 TARGET_DOMAIN = "dslr"
 
+MODEL_FREEZE_LAYES = 0 # possible: 0, 1, 3, 33, 72, 129, 141, 159 (resnet)  # possible: 0, 2, 4, 6, 8, 10 (alexnet)
+
 # CLASSES_CNT = 10
 # MODEL_BACKBONE = "mnist_dann"
 # DOMAIN_HEAD = "mnist_dann"
