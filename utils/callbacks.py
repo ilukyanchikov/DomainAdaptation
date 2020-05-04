@@ -125,7 +125,7 @@ class HistorySaver:
             if self.extra_losses is not None:
                 for loss_names in self.extra_losses.values():
                     for loss_name in loss_names:
-                        self.extra_losses_history[loss_name].append(epoch_log[loss_name])
+                        self.extra_losses_history[loss_name].append(epoch_log[loss_name].tolist())
 
         self.loss_history['loss'].append(epoch_log['loss'])
 
@@ -150,11 +150,11 @@ def dict_from_module(module):
 
 
 class WandbCallback:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, project="DomainAdaptation", entity='arqwer', *args, **kwargs):
         """
         Callback that logs everything to wandb
         """
-        wandb.init(*args, **kwargs, project="DomainAdaptation", entity='arqwer', reinit=True)
+        wandb.init(*args, **kwargs, project=project, entity=entity, reinit=True)
         wandb.config.update(dict_from_module(dann_config))
 
     def __call__(self, model, epoch_log, current_epoch, total_epoch):
