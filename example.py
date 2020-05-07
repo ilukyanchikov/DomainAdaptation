@@ -54,3 +54,5 @@ if __name__ == '__main__':
                                    extra_losses={'domain_loss': ['domain_loss', 'val_domain_loss'],
                                                  'train_domain_loss': ['domain_loss_on_src', 'domain_loss_on_trg']})])
     wandb.join()
+
+
