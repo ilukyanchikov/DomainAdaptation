@@ -69,7 +69,7 @@ def get_alexnet():
     classifier[-2] = nn.ReLU()
     if dann_config.FREZE_BACKBONE_FEATURES:
         for i, param in enumerate(features.parameters()):
-            if i < 0: # possible: 0, 2, 4, 6, 8, 10
+            if i < dann_config.FREEZE_LAYERS: # possible: 0, 2, 4, 6, 8, 10
                 param.requires_grad = False
     classifier[-1] = nn.Linear(4096, dann_config.CLASSES_CNT)
     classifier_layer_ids = [1, 4, 6]
@@ -93,7 +93,7 @@ def get_resnet50():
     )
     if dann_config.FREZE_BACKBONE_FEATURES:
         for i, param in enumerate(features.parameters()):
-            if i < 141: # possible: 0, 1, 3, 33, 72, 129, 141, 159
+            if i < dann_config.FREEZE_LAYERS: # possible: 0, 1, 3, 33, 72, 129, 141, 159
                 param.requires_grad = False
 
     pooling = model.avgpool
