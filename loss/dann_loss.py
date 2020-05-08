@@ -105,6 +105,8 @@ def calc_rev_grad_alpha(current_iteration,
 
 
 def calc_domain_loss_weight(current_iteration, total_iterations):
+    if dann_config.DISABLE_DOMAIN_LOSS:
+        return 0
     return 1
 
 

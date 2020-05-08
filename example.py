@@ -35,6 +35,9 @@ if __name__ == '__main__':
     model = DANNModel().to(device)
     acc = AccuracyScoreFromLogits()
 
+    name = "test"
+    experiment_name = f"{dann_config.SOURCE_DOMAIN}_{dann_config.TARGET_DOMAIN}_{name}"
+
     scheduler = LRSchedulerSGD(blocks_with_smaller_lr=dann_config.BLOCKS_WITH_SMALLER_LR)
     tr = Trainer(model, loss_DANN)
     tr.fit(train_gen_s, train_gen_t,
@@ -49,7 +52,7 @@ if __name__ == '__main__':
            callbacks=[print_callback(watch=["loss", "domain_loss", "val_loss",
                                             "val_domain_loss", 'trg_metrics', 'src_metrics']),
                       ModelSaver('DANN', dann_config.SAVE_MODEL_FREQ),
-                      WandbCallback(),
+                      WandbCallback(project="domain_adaptation", name=experiment_name, entity=None),
                       HistorySaver('log_with_sgd', dann_config.VAL_FREQ, path='_log/DANN_Resnet_sgd',
                                    extra_losses={'domain_loss': ['domain_loss', 'val_domain_loss'],
                                                  'train_domain_loss': ['domain_loss_on_src', 'domain_loss_on_trg']})])

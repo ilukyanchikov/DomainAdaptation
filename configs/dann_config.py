@@ -27,6 +27,8 @@ DATASET = "office-31"
 SOURCE_DOMAIN = "amazon"
 TARGET_DOMAIN = "webcam"
 
+DISABLE_DOMAIN_LOSS = True
+
 # CLASSES_CNT = 10
 # MODEL_BACKBONE = "mnist_dann"
 # DOMAIN_HEAD = "mnist_dann"
