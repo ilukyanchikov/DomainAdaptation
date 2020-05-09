@@ -97,8 +97,14 @@ def get_resnet50():
                 param.requires_grad = False
 
     pooling = model.avgpool
-    classifier = nn.Sequential(nn.Linear(2048, dann_config.CLASSES_CNT))
-    classifier_layer_ids = [0]
+    classifier = nn.Sequential(
+        nn.Linear(2048, 2048),
+        nn.BatchNorm1d(2048),
+        nn.ReLU(),
+        nn.Linear(2048, dann_config.CLASSES_CNT),
+    )
+    classifier_layer_ids = [0, 3]
+
     pooling_ftrs = 2048
     pooling_output_side = 1
     return features, pooling, classifier, classifier_layer_ids, 2048, 0
