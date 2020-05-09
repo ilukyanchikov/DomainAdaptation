@@ -35,7 +35,7 @@ if __name__ == '__main__':
     model = DANNModel().to(device)
     acc = AccuracyScoreFromLogits()
 
-    name = "test2"
+    name = "test2_dropout"
     info = 'dl_disable' if dann_config.DISABLE_DOMAIN_LOSS else ''
     bs = 'bs_{}'.format(dann_config.BATCH_SIZE)
     experiment_name = f"{dann_config.MODEL_BACKBONE}_{dann_config.SOURCE_DOMAIN}_{dann_config.TARGET_DOMAIN}_{name}_{info}_{bs}"
