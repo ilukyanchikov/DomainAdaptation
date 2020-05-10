@@ -16,26 +16,38 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 if __name__ == '__main__':
-    train_gen_s, val_gen_s, test_gen_s = create_data_generators(dann_config.DATASET,
-                                                                dann_config.SOURCE_DOMAIN,
-                                                                batch_size=dann_config.BATCH_SIZE,
-                                                                infinite_train=True,
-                                                                image_size=dann_config.IMAGE_SIZE,
-                                                                num_workers=dann_config.NUM_WORKERS,
-                                                                device=device)
+    print('source_domain is {}, target_domain is {}'.format(dann_config.SOURCE_DOMAIN, dann_config.TARGET_DOMAIN))
 
-    train_gen_t, val_gen_t, test_gen_t = create_data_generators(dann_config.DATASET,
-                                                                dann_config.TARGET_DOMAIN,
-                                                                batch_size=dann_config.BATCH_SIZE,
-                                                                infinite_train=True,
-                                                                image_size=dann_config.IMAGE_SIZE,
-                                                                num_workers=dann_config.NUM_WORKERS,
-                                                                device=device)
+    train_gen_s, val_gen_s, _ = create_data_generators(dann_config.DATASET,
+                                                       dann_config.SOURCE_DOMAIN,
+                                                       batch_size=dann_config.BATCH_SIZE,
+                                                       infinite_train=True,
+                                                       image_size=dann_config.IMAGE_SIZE,
+                                                       split_ratios=[0.9, 0.1, 0],
+                                                       num_workers=dann_config.NUM_WORKERS,
+                                                       device=device)
+
+    train_gen_t, _, _ = create_data_generators(dann_config.DATASET,
+                                               dann_config.TARGET_DOMAIN,
+                                               batch_size=dann_config.BATCH_SIZE,
+                                               infinite_train=True,
+                                               split_ratios=[1, 0, 0],
+                                               image_size=dann_config.IMAGE_SIZE,
+                                               num_workers=dann_config.NUM_WORKERS,
+                                               device=device)
+
+    val_gen_t, _, _ = create_data_generators(dann_config.DATASET,
+                                             dann_config.TARGET_DOMAIN,
+                                             batch_size=dann_config.BATCH_SIZE,
+                                             infinite_train=False,
+                                             split_ratios=[1, 0, 0],
+                                             image_size=dann_config.IMAGE_SIZE,
+                                             num_workers=dann_config.NUM_WORKERS,
+                                             device=device)
 
     model = DANNModel().to(device)
     acc = AccuracyScoreFromLogits()
-
-    name = "test2_dropout"
+    name = "test4_dropout"
     info = 'dl_disable' if dann_config.DISABLE_DOMAIN_LOSS else ''
     bs = 'bs_{}'.format(dann_config.BATCH_SIZE)
     experiment_name = f"{dann_config.MODEL_BACKBONE}_{dann_config.SOURCE_DOMAIN}_{dann_config.TARGET_DOMAIN}_{name}_{info}_{bs}"
