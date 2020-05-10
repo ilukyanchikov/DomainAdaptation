@@ -97,18 +97,18 @@ def get_resnet50():
                 param.requires_grad = False
 
     pooling = model.avgpool
+    domain_input_len = 2048
     classifier = nn.Sequential(
-        nn.Linear(2048, 2048),
-        nn.BatchNorm1d(2048),
-        nn.Dropout(),
+        nn.Linear(2048, domain_input_len),
+        nn.BatchNorm1d(domain_input_len),
         nn.ReLU(),
-        nn.Linear(2048, dann_config.CLASSES_CNT),
+        nn.Linear(domain_input_len, dann_config.CLASSES_CNT),
     )
-    classifier_layer_ids = [0, 4]
+    classifier_layer_ids = [0, 3]
 
     pooling_ftrs = 2048
     pooling_output_side = 1
-    return features, pooling, classifier, classifier_layer_ids, 2048, 0
+    return features, pooling, classifier, classifier_layer_ids, 2048, 1
 
 
 def get_vanilla_dann():
