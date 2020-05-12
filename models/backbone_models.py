@@ -106,13 +106,17 @@ def get_resnet50():
         nn.BatchNorm1d(2048),
         nn.Dropout(),
         nn.ReLU(),
+        nn.Linear(2048, 2048),
+        nn.BatchNorm1d(2048),
+        nn.Dropout(),
+        nn.ReLU(),
         nn.Linear(2048, dann_config.CLASSES_CNT),
     )
-    classifier_layer_ids = [0, 4, 8]
+    classifier_layer_ids = [0, 4, 8, 12]
 
     pooling_ftrs = 2048
     pooling_output_side = 1
-    return features, pooling, classifier, classifier_layer_ids, 2048, 2
+    return features, pooling, classifier, classifier_layer_ids, 2048, 3
 
 
 def get_vanilla_dann():
