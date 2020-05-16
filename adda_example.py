@@ -20,10 +20,19 @@ if __name__ == '__main__':
                                                                 num_workers=adda_config.NUM_WORKERS,
                                                                 device=device)
 
-    train_gen_t, val_gen_t, test_gen_t = create_data_generators(adda_config.DATASET,
+    train_gen_t, _, _ = create_data_generators(adda_config.DATASET,
                                                                 adda_config.TARGET_DOMAIN,
                                                                 batch_size=adda_config.BATCH_SIZE,
                                                                 infinite_train=True,
+                                                                split_ratios=[1, 0, 0],
+                                                                image_size=adda_config.IMAGE_SIZE,
+                                                                num_workers=adda_config.NUM_WORKERS,
+                                                                device=device)
+    val_gen_t, _, _ = create_data_generators(adda_config.DATASET,
+                                                                adda_config.TARGET_DOMAIN,
+                                                                batch_size=adda_config.BATCH_SIZE,
+                                                                infinite_train=False,
+                                                                split_ratios=[1, 0, 0],
                                                                 image_size=adda_config.IMAGE_SIZE,
                                                                 num_workers=adda_config.NUM_WORKERS,
                                                                 device=device)
