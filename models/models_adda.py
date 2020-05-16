@@ -60,20 +60,14 @@ class ADDAModel(BaseModel):
 
         return output
 
-    def predict_domain(self, src_data, trg_data):
-        for (src_images, _), (trg_images, _) in zip(src_data, trg_data):
-            features_src = self.model.src_cnn(src_images)
-            features_trg = self.model.trg_cnn(trg_images)
+    def predict_domain(self, src_images, trg_images):
+        features_src = self.src_cnn(src_images)
+        features_trg = self.trg_cnn(trg_images)
 
-            features = torch.cat((features_src, features_trg), 0)
+        features = torch.cat((features_src, features_trg), 0)
 
-            pred = self.model.discriminator(features.detach())
-
-            source_len = len(src_images)
-            target_len = len(trg_images)
-            is_target_on_src = torch.ones(source_len, dtype=torch.long, device=self.device)
-            is_target_on_trg = torch.zeros(target_len, dtype=torch.long, device=self.device)
-            domain_labels = torch.cat((is_target_on_src, is_target_on_trg), 0)
+        pred = self.discriminator(features.detach())
+        return pred
 
     def predict(self, input_data, domain='src'):
         return self.forward(input_data, domain=domain)["class"]
