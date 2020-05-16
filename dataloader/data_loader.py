@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from torchvision.datasets import ImageFolder, MNIST
+from torchvision.datasets import ImageFolder, MNIST, USPS
 from torch.utils.data import DataLoader, random_split
 from torchvision import transforms
 
@@ -61,6 +61,24 @@ class MnistDataset(MNIST):
             ])
         super().__init__(root, transform=transform, **kwargs)
     
+    def get_semi_supervised_indexes_for_subset(self):
+        raise NotImplementedError
+
+
+class UspsDataset(USPS):
+    """
+        MNIST Dataset class. Inherits from `torchvision.datasets.MNIST`.
+    """
+
+    def __init__(self, root, transform, image_size, **kwargs):
+        if transform is None:
+            transform = transforms.Compose([
+                transforms.Grayscale(3),
+                transforms.Resize(image_size),
+                transforms.ToTensor(),
+            ])
+        super().__init__(root, transform=transform, **kwargs)
+
     def get_semi_supervised_indexes_for_subset(self):
         raise NotImplementedError
         
@@ -233,7 +251,7 @@ def create_dataset(dataset_name, domain, data_path, split_ratios, transform, ima
     
     elif dataset_name == "mnist":
         
-        dataset_domains = ["mnist", "mnist-m"]
+        dataset_domains = ["mnist", "mnist-m", "usps"]
         
         assert domain in dataset_domains, f"Incorrect domain {domain}: " + \
             f"dataset {dataset_name} domains: {dataset_domains}"
@@ -250,7 +268,13 @@ def create_dataset(dataset_name, domain, data_path, split_ratios, transform, ima
             test_dataset = MnistMDataset(f"{data_path}/{dataset_name}/{domain}",
                                          f"{data_path}/{dataset_name}/mnist",
                                          train=False, transform=transform, image_size=image_size, download=True)
-        
+
+        elif domain == "usps":
+            train_dataset = UspsDataset(f"{data_path}/{dataset_name}/{domain}",
+                                 train=True, transform=transform, image_size=image_size, download=True)
+            test_dataset = UspsDataset(f"{data_path}/{dataset_name}/{domain}",
+                                train=False, transform=transform, image_size=image_size, download=True)
+
         split_ratios = [split_ratios[0] / sum(split_ratios[0:2]),
                         split_ratios[1] / sum(split_ratios[0:2])]  # test_size is fixed in MNIST
         
