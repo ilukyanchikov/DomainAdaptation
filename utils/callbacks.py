@@ -36,6 +36,8 @@ class print_callback:
                     print(' '.join(['val_trg_{}: {:<10}\t'.format(k, v) for k, v in epoch_log['trg_metrics'].items()]))
                 elif key == 'src_metrics':
                     print(' '.join(['val_src_{}: {:<10}\t'.format(k, v) for k, v in epoch_log['src_metrics'].items()]))
+                else:
+                    print(' '.join(['{}_{}: {:<10}\t'.format(key, k, v) for k, v in epoch_log[key].items()]))
         print()
 
 

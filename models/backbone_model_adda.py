@@ -7,13 +7,9 @@ class Flatten(nn.Module):
 
 
 class LeNet(nn.Module):
-    """LeNet encoder model for ADDA."""
 
     def __init__(self):
-        """Init LeNet encoder."""
         super(LeNet, self).__init__()
-
-        self.restored = False
 
         self.features = nn.Sequential(
 
@@ -28,12 +24,10 @@ class LeNet(nn.Module):
         )
         self.pooling = nn.Sequential(
             Flatten(),
-            nn.Linear(50 * 4 * 4, 500),
-            nn.ReLU()
+            nn.Linear(50 * 4 * 4, 500)
         )
 
     def forward(self, input):
-        """Forward the LeNet."""
         features = self.features(input)
         feat = self.pooling(features)
         return feat
@@ -44,8 +38,9 @@ def get_lenet():
     features = lenet.features
     pooling = lenet.pooling
     classifier = nn.Sequential(
-        nn.Dropout2d(),
+        nn.ReLU(),
+        nn.Dropout(),
         nn.Linear(500, 10),
     )
-    classifier_layer_ids = [3]
+    classifier_layer_ids = [2]
     return features, pooling, classifier, classifier_layer_ids, 500, None

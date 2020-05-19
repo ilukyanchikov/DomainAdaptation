@@ -79,12 +79,13 @@ class AddaTrainer:
             raise ValueError('Optimizer not allowed {}. Only adam is available'.format(opt))
 
         criterion = nn.CrossEntropyLoss()
-        criterion1 = nn.CrossEntropyLoss()
 
         if validation_data is not None:
             src_val_data, trg_val_data = validation_data
 
         for i in range(n_epochs):
+            self.model.trg_cnn.train()
+            self.model.discriminator.train()
             self.loss_logger.reset_history()
             for step, (src_batch, trg_batch) in enumerate(zip(src_data, trg_data)):
                 if step == steps_per_epoch:
@@ -93,9 +94,6 @@ class AddaTrainer:
                 trg_images, _ = trg_batch
 
                 # discriminator step
-                self.model.discriminator.train()
-                self.model.trg_cnn.eval()
-                self.model.src_cnn.eval()
 
                 pred = self.model.predict_domain(src_images, trg_images)
 
@@ -107,15 +105,7 @@ class AddaTrainer:
                 loss.backward()
                 discriminator_optimizer.step()
 
-                prev_dis_metrics = None
-                if i % val_freq == 0 and validation_data is not None:
-                    # calculating metrics on validation
-                    if metrics is not None and validation_data is not None:
-                            prev_dis_metrics = self.dis_score(src_val_data, trg_val_data, metrics)
-
                 #trg cnn step
-                self.model.discriminator.eval()
-                self.model.trg_cnn.train()
 
                 discriminator_optimizer.zero_grad()
                 trg_cnn_optimizer.zero_grad()
@@ -124,7 +114,7 @@ class AddaTrainer:
                 pred_trg = self.model.discriminator(features_trg)
                 fake_label_trg = self._get_domain_labels(trg_images, [])
 
-                loss_cnn = criterion1(pred_trg, fake_label_trg)
+                loss_cnn = criterion(pred_trg, fake_label_trg)
 
                 trg_cnn_optimizer.zero_grad()
                 loss_cnn.backward()
@@ -144,10 +134,8 @@ class AddaTrainer:
             if callbacks is not None:
                 epoch_log = {'d_loss': loss.data.cpu().item(),
                              'c_loss': loss_cnn.data.cpu().item(),
-                             'prev_dis_metrics': prev_dis_metrics,
                              'dis_metrics': dis_metrics,
                              'trg_metrics': trg_metrics}
-                print(epoch_log)
 
                 for callback in callbacks:
                     callback(self.model, epoch_log, i, n_epochs)

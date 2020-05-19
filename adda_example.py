@@ -56,14 +56,11 @@ if __name__ == '__main__':
                callbacks=[print_callback(watch=["loss", 'src_metrics']),
                           ModelSaver('ADDA_PRETRAINED', adda_config.SAVE_MODEL_FREQ),
                           WandbCallback(project="adda", entity=None)])
-
-    model = ADDAModel().to(device)
-    model.load_state_dict(torch.load(adda_config.CHECKPOINT))
-    tr = AddaTrainer(model, None)
+    else:
+        model = ADDAModel().to(device)
+        model.load_state_dict(torch.load(adda_config.CHECKPOINT))
+        tr = AddaTrainer(model, None)
     model.copy_src_to_trg()
-
-    score_before_adapt = tr.score(val_gen_t, [acc], domain='trg')
-    print(score_before_adapt)
 
     tr.fit_adaptation(train_gen_s, train_gen_t,
                       n_epochs=adda_config.N_EPOCHS_ADAPT,
@@ -72,11 +69,12 @@ if __name__ == '__main__':
                       steps_per_epoch=adda_config.STEPS_PER_EPOCH,
                       val_freq=adda_config.VAL_FREQ,
                       opt='adam',
-                      opt_kwargs={},
-                      callbacks=[print_callback(watch=["loss", 'd_loss', 'c_loss', 'dis_metrics']),
+                      opt_kwargs={'lr': 1e-4, 'betas': (0.5, 0.9)},
+                      callbacks=[print_callback(watch=["loss", 'd_loss', 'c_loss', 'dis_metrics', 'trg_metrics']),
                                  ModelSaver('ADDA', adda_config.SAVE_MODEL_FREQ),
                                  WandbCallback(project="adda", entity=None)])
 
+    score_before_adapt = tr.score(val_gen_t, [acc], domain='src')
     score = tr.score(val_gen_t, [acc], domain='trg')
 
     print(score_before_adapt)

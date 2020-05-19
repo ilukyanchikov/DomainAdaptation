@@ -5,13 +5,9 @@ from models.backbone_model_adda import get_lenet
 
 
 class Discriminator(nn.Module):
-    """Discriminator model for source domain."""
 
     def __init__(self, input_dims, hidden_dims, output_dims):
-        """Init discriminator."""
         super(Discriminator, self).__init__()
-
-        self.restored = False
 
         self.layer = nn.Sequential(
             nn.Linear(input_dims, hidden_dims),
@@ -23,7 +19,6 @@ class Discriminator(nn.Module):
         )
 
     def forward(self, input):
-        """Forward the discriminator."""
         out = self.layer(input)
         return out
 
@@ -31,14 +26,16 @@ class Discriminator(nn.Module):
 class ADDAModel(BaseModel):
     def __init__(self):
         super(ADDAModel, self).__init__()
-        self.features, self.pooling, self.class_classifier, \
+        features, pooling, self.class_classifier, \
         _, domain_input_len, self.classifier_before_domain_cnt = get_lenet()
 
-        self.src_cnn = nn.Sequential(self.features,
-                                     self.pooling)
+        features_trg, pooling_trg, _, _, _, _ = get_lenet()
 
-        self.trg_cnn = nn.Sequential(self.features,
-                                     self.pooling)
+        self.src_cnn = nn.Sequential(features,
+                                     pooling)
+
+        self.trg_cnn = nn.Sequential(features_trg,
+                                     pooling_trg)
 
         self.discriminator = Discriminator(domain_input_len, 500, 2)
 
