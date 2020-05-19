@@ -166,11 +166,12 @@ def dict_from_module(module):
 
 
 class WandbCallback:
-    def __init__(self, project="DomainAdaptation", entity='arqwer', *args, **kwargs):
+    def __init__(self, *args, project="domain_adaptation", config=dann_config, **kwargs):
         """
         Callback that logs everything to wandb
         """
-        wandb.init(*args, **kwargs, project=project, entity=entity, reinit=True)
+        wandb.init(*args, **kwargs, project=project, reinit=True)
+        # wandb.init(*args, **kwargs, project="DomainAdaptation", entity='arqwer', reinit=True)
         wandb.config.update(dict_from_module(dann_config))
 
     def __call__(self, model, epoch_log, current_epoch, total_epoch):
